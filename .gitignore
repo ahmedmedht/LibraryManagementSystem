@@ -1,0 +1,14 @@
+<< 'EOF'
+.vs/
+bin/
+obj/
+Logs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+TestResults/
+.vscode/
+*.db
+*.sqlite
+EOF
