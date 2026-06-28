@@ -2,7 +2,7 @@
 
 A Library Management System built with ASP.NET Core Web API and SQL Server.
 
-The system allows library staff to manage books, authors, publishers, categories, members, system users, and borrowing transactions.
+The system allows authorized library users to manage books, authors, publishers, categories, members, system users, and borrowing transactions.
 
 ---
 
@@ -23,7 +23,7 @@ The system allows library staff to manage books, authors, publishers, categories
 
 ## Architecture
 
-The project follows a simple Clean Architecture / layered structure:
+The project follows a simple layered architecture:
 
 ```text
 LibraryManagement.Api
@@ -61,7 +61,7 @@ Contains:
 - Entities
 - Enums
 - Domain exceptions
-- Business rules inside entities
+- Business rules
 
 ### LibraryManagement.Infrastructure
 
@@ -70,7 +70,7 @@ Contains:
 - Entity Framework Core DbContext
 - EF Core configurations
 - Repositories
-- Identity user implementation
+- ASP.NET Core Identity implementation
 - JWT token generation
 - Authentication service
 - Database seeding
@@ -158,33 +158,6 @@ The system contains the following main entities:
 
 ---
 
-## Book Copies Design
-
-For simplicity, the system does not use a separate `BookCopy` table.
-
-Instead, each book has:
-
-```text
-TotalCopies
-AvailableCopies
-Status
-```
-
-The book status is calculated using this rule:
-
-```text
-AvailableCopies > 0  => In
-AvailableCopies == 0 => Out
-```
-
-Borrowing a book decreases `AvailableCopies`.
-
-Returning a book increases `AvailableCopies`.
-
-This design is simple, practical, and suitable for the assignment scope.
-
----
-
 ## Book Metadata
 
 Each book supports:
@@ -202,6 +175,29 @@ Each book supports:
 - Total copies
 - Available copies
 - Status
+
+---
+
+## Book Availability Tracking
+
+The system tracks book availability using:
+
+```text
+TotalCopies
+AvailableCopies
+Status
+```
+
+When a book is borrowed, `AvailableCopies` decreases by one.
+
+When a book is returned, `AvailableCopies` increases by one.
+
+The book status is updated based on the number of available copies:
+
+```text
+AvailableCopies > 0  => In
+AvailableCopies == 0 => Out
+```
 
 ---
 
@@ -244,8 +240,6 @@ The system logs important actions such as:
 - Update user
 - Delete user
 - Change user role
-
-Activity logs are stored in the database.
 
 Only Administrators can view activity logs.
 
@@ -544,6 +538,22 @@ In Swagger, click `Authorize` and paste the token.
 
 ---
 
+## Project Deliverables
+
+The repository includes:
+
+```text
+README.md
+Database/Scripts/01-database-schema.sql
+Database/Scripts/02-sample-data.sql
+Database/Scripts/README.md
+Docs/ERD.md
+Postman/LibraryManagement.postman_collection.json
+Postman/LibraryManagement.Local.postman_environment.json
+```
+
+---
+
 ## Security Notes
 
 - Passwords are securely hashed using ASP.NET Core Identity.
@@ -602,17 +612,11 @@ Unauthorized requests return:
 
 ---
 
-## Design Decisions
-
-### Monolithic API
-
-This project was implemented as a monolithic ASP.NET Core Web API.
-
-Microservices were intentionally avoided because the assignment scope is focused on a single Library Management System with one relational database.
+## Design Notes
 
 ### Layered Architecture
 
-The project uses a simple layered architecture to keep the code organized, testable, and easy to explain.
+The project uses a layered architecture to keep the code organized, testable, and easy to maintain.
 
 ### Repository and Service Pattern
 
@@ -620,27 +624,19 @@ Repositories handle database access.
 
 Services handle business logic.
 
-Controllers only handle HTTP requests and responses.
+Controllers handle HTTP requests and responses.
 
-### Identity for System Users
+### Identity-Based System Users
 
-System users are represented using ASP.NET Core Identity.
+System users are managed using ASP.NET Core Identity.
 
-The system does not use a separate employee table.
-
-Internal users are managed through:
+Roles are managed through:
 
 ```text
 AspNetUsers
 AspNetRoles
 AspNetUserRoles
 ```
-
-### Book Copy Tracking
-
-The system tracks copies using `TotalCopies` and `AvailableCopies`.
-
-This keeps the design simple while still supporting borrowing and returning books.
 
 ---
 
@@ -662,3 +658,4 @@ This project satisfies the main assignment requirements:
 - Search APIs
 - Swagger documentation
 
+The solution is simple, practical, and suitable for demonstration during the interview.
