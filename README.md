@@ -363,7 +363,7 @@ GET /api/activity-logs
 
 ```bash
 git clone https://github.com/ahmedmedht/LibraryManagementSystem.git
-cd YOUR_REPOSITORY_NAME
+cd LibraryManagementSystem
 ```
 
 ### 2. Update the connection string
